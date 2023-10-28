@@ -33,8 +33,13 @@ public class SerializedArticleDAO implements ArticleDAO {
     }
 
     @Override
-    public void saveArticle(Article article) {
+    public void saveArticle(Article article) throws IllegalArgumentException{
         List<Article> articles = getArticleList();
+        for(Article a_:articles)
+        {
+            if(a_.getId() == article.getId())
+            throw new IllegalArgumentException("Error: Article already exists.(id=" + article.getId() + ")");
+        }
         articles.add(article);
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
             objectOutputStream.writeObject(articles);
@@ -45,7 +50,7 @@ public class SerializedArticleDAO implements ArticleDAO {
     }
 
     @Override
-    public void deleteArticle(int id) {
+    public void deleteArticle(int id) throws IllegalArgumentException{
         List<Article> articles = getArticleList();
         Article articleToRemove = null;
         for (Article article : articles) {
@@ -63,5 +68,6 @@ public class SerializedArticleDAO implements ArticleDAO {
                 System.exit(1);
             }
         }
+        else throw new IllegalArgumentException("Can't delete an article.");
     }
 }

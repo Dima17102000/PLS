@@ -22,9 +22,9 @@ public class ArticleCLI {
                     throw new IllegalArgumentException("Error: Invalid parameter.");
                 }
 
-                if (args[2].equals("book") && args.length == 8) {
+                if (args[2].equals("book") && args.length == 9) {
                     addBook(filename, args[3], args[4], args[5], args[6], args[7], args[8]);
-                } else if (args[2].equals("dvd") && args.length == 8) {
+                } else if (args[2].equals("dvd") && args.length == 10) {
                     addDVD(filename, args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
                 } else {
                     throw new IllegalArgumentException("Error: Invalid parameter.");
@@ -40,88 +40,75 @@ public class ArticleCLI {
         }
     }
 
+    
+
     private static void addBook(String filename, String id, String title, String publisher, String releaseYear,
-                                String basePrice, String pages) {
-        try {
-            int articleId = Integer.parseInt(id);
-            int year = Integer.parseInt(releaseYear);
-            double price = Double.parseDouble(basePrice);
-            int numPages = Integer.parseInt(pages);
+                            String basePrice, String pages) {
+    try {
+        int articleId = Integer.parseInt(id);
+        int year = Integer.parseInt(releaseYear);
+        double price = Double.parseDouble(basePrice);
+        int numPages = Integer.parseInt(pages);
 
-            if (year < 0 || year > 9999) {
-                throw new IllegalArgumentException("Error: Invalid release year.");
-            }
+        if (year < 0 || year > 9999) {
+            throw new IllegalArgumentException("Error: Invalid release year.");
+        }
 
-            if (numPages <= 0) {
-                throw new IllegalArgumentException("Error: Invalid parameter.");
-            }
-
-            Book book = new Book(articleId, title, year, publisher, price, numPages);
-
-            if (articleExists(filename, articleId)) {
-                throw new IllegalArgumentException("Error: Article already exists. (id=" + articleId + ")");
-            }
-
-            try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename, true))) {
-                outputStream.writeObject(book);
-                System.out.println("Info: Article " + articleId + " added.");
-            } catch (IOException e) {
-                System.err.println("Error: Could not add the article.");
-            }
-        } catch (NumberFormatException e) {
+        if (numPages <= 0) {
             throw new IllegalArgumentException("Error: Invalid parameter.");
         }
-    }
 
-    private static void addDVD(String filename, String id, String title, String publisher, String releaseYear,
-                               String basePrice, String length, String ageRating) {
+        Book book = new Book(articleId, title, year, publisher, price, numPages);
+
+        SerializedArticleDAO s = new SerializedArticleDAO(filename);
+
         try {
-            int articleId = Integer.parseInt(id);
-            int year = Integer.parseInt(releaseYear);
-            double price = Double.parseDouble(basePrice);
-            int minutes = Integer.parseInt(length);
-            int rating = Integer.parseInt(ageRating);
-
-            if (year < 0 || year > 9999) {
-                throw new IllegalArgumentException("Error: Invalid release year.");
-            }
-
-            if (rating != 0 && rating != 6 && rating != 12 && rating != 16 && rating != 18) {
-                throw new IllegalArgumentException("Error: Invalid age rating.");
-            }
-
-            DVD dvd = new DVD(articleId, title, year, publisher, price, minutes, rating);
-
-            if (articleExists(filename, articleId)) {
-                throw new IllegalArgumentException("Error: Article already exists. (id=" + articleId + ")");
-            }
-
-            try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(filename, true))) {
-                outputStream.writeObject(dvd);
-                System.out.println("Info: Article " + articleId + " added.");
-            } catch (IOException e) {
-                System.err.println("Error: Could not add the article.");
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Error: Invalid parameter.");
+            s.saveArticle(book);
+            double discountedPrice = book.getPrice();
+            System.out.println("Info: Article " + articleId + " added.");
+            System.out.println("Discounted Price: " + df.format(discountedPrice));
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: Could not add the article.");
         }
+    } catch (NumberFormatException e) {
+        throw new IllegalArgumentException("Error: Invalid parameter.");
     }
+}
 
-    private static boolean articleExists(String filename, int articleId) {
-        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(filename))) {
-            while (true) {
-                Article article = (Article) inputStream.readObject();
-                if (article.getId() == articleId) {
-                    return true;
-                }
-            }
-        } catch (EOFException e) {
-            // End of file
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error: Could not read articles.");
+private static void addDVD(String filename, String id, String title, String publisher, String releaseYear,
+                           String basePrice, String length, String ageRating) {
+    try {
+        int articleId = Integer.parseInt(id);
+        int year = Integer.parseInt(releaseYear);
+        double price = Double.parseDouble(basePrice);
+        int minutes = Integer.parseInt(length);
+        int rating = Integer.parseInt(ageRating);
+
+        if (year < 0 || year > 9999) {
+            throw new IllegalArgumentException("Error: Invalid release year.");
         }
-        return false;
+
+        if (rating != 0 && rating != 6 && rating != 12 && rating != 16 && rating != 18) {
+            throw new IllegalArgumentException("Error: Invalid age rating.");
+        }
+
+        DVD dvd = new DVD(articleId, title, year, publisher, price, minutes, rating);
+
+        SerializedArticleDAO s = new SerializedArticleDAO(filename);
+
+        try {
+            s.saveArticle(dvd);
+            double discountedPrice = dvd.getPrice();
+            System.out.println("Info: Article " + articleId + " added.");
+            System.out.println("Discounted Price: " + df.format(discountedPrice));
+        } catch (IllegalArgumentException e) {
+            System.err.println("Error: Could not add the article.");
+        }
+    } catch (NumberFormatException e) {
+        throw new IllegalArgumentException("Error: Invalid parameter.");
     }
+}
+    
 
     private static void listArticles(String filename) {
         List<Article> articles = new ArrayList<>();
