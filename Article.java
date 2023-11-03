@@ -1,7 +1,12 @@
+/**
+ * @author Dmytro Kostariev
+ * @id 11848552
+ */
+
 import java.time.Year;
 import java.util.Objects;
-
-public abstract class Article {
+import java.io.Serializable;
+public abstract class Article implements Serializable {
     private int id;
     private String title;
     private int releaseYear;
@@ -48,7 +53,7 @@ public abstract class Article {
     public void setReleaseYear(int releaseYear) {
         int currentYear = Year.now().getValue();
         if (releaseYear > currentYear) {
-            throw new IllegalArgumentException("Release year cannot be in the future.");
+            throw new IllegalArgumentException("Error: Invalid release year.");
         }
         this.releaseYear = releaseYear;
     }
@@ -118,3 +123,5 @@ public abstract class Article {
                 '}';
     }
 }
+
+

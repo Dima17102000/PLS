@@ -1,3 +1,9 @@
+/**
+ * @author Dmytro Kostariev
+ * @id 11848552
+ * @comment READ-ONLY FILE 
+ */
+
 import java.util.List;
 
 public interface ArticleDAO {

@@ -1,3 +1,9 @@
+/**
+ * @author Dmytro Kostariev
+ * @id 11848552
+ */
+import java.text.DecimalFormat;
+
 public class Book extends Article {
     private int numPages;
 
@@ -32,18 +38,20 @@ public class Book extends Article {
 
     @Override
     public String toString() {
-        return "Book{" +
-                "ID=" + getId() +
-                ", Title='" + getTitle() + '\'' +
-                ", Release Year=" + getReleaseYear() +
-                ", Publisher='" + getPublisher() + '\'' +
-                ", Base Price=" + getBasePrice() + " Euro" +
-                ", Number of Pages=" + numPages +
-                ", Age=" + getAge() + " years" +
-                ", Discount=" + (getDiscount() * 100) + "%" +
-                ", Price=" + getPrice() + " Euro" +
+        return "Type:       Book"  + "\n" +
+                "Id:         " + getId() +
+                "\nTitle:      " + getTitle()  +
+                "\nYear:       " +  + getReleaseYear() +
+                "\nPublisher:  " + getPublisher() + 
+                "\nBase price: " + getBasePrice() +
+                "\nPrice:      " + ArticleCLI.df.format(getPrice()) +
+                "\nPages:      " + numPages + "\n";
+                /*"Age=" + getAge() + " years" +
+                "Discount=" + (getDiscount() * 100) + "%" +
+                "Price=" + getPrice() + " Euro" +
                 '}';
+                */
+                
     }
 }
-
 

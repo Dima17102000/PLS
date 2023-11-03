@@ -1,3 +1,9 @@
+/**
+ * @author Dmytro Kostariev
+ * @id 11848552
+ */
+
+
 public class DVD extends Article {
     private int lengthMinutes;
     private int ageRating; // 0 (no age restriction), 6, 12, 16, or 18
@@ -50,17 +56,16 @@ public class DVD extends Article {
 
     @Override
     public String toString() {
-        return "DVD{" +
-                "ID=" + getId() +
-                ", Title='" + getTitle() + '\'' +
-                ", Release Year=" + getReleaseYear() +
-                ", Publisher='" + getPublisher() + '\'' +
-                ", Base Price=" + getBasePrice() + " Euro" +
-                ", Length (minutes)=" + lengthMinutes +
-                ", Age Rating=" + ageRating +
-                ", Age=" + getAge() + " years" +
-                ", Discount=" + (getDiscount() * 100) + "%" +
-                ", Price=" + getPrice() + " Euro" +
-                '}';
+        return "Type:       DVD" +
+                "\nId:         " + getId() +
+                "\nTitle:      " + getTitle() +
+                "\nYear:       " + getReleaseYear() +
+                "\nPublisher:  " + getPublisher() +
+                "\nBase price: " + getBasePrice() +
+                "\nPrice:      " +ArticleCLI.df.format(getPrice()) +
+                "\nLength:     " + lengthMinutes +
+                "\nAge rating: " + getAgeRating() + "\n";
     }
+
 }
+
